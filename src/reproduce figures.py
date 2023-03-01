@@ -1,14 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rc('text.latex', preamble=r'\usepackage{textgreek}')
 
 ##Figure 1
 a = pd.read_csv("Battery_train.csv")
 exclude = ["Cycle"]
 a.loc[:, a.columns.difference(exclude)].plot(legend=None)
 plt.axhline(y=0.88, color='r')
-plt.xlabel('t(cycles)')
-plt.ylabel('Capacity C_t,i (Ah)')
+plt.xlabel(r'$t$ (cycles)')
+plt.ylabel(r'Capacity $C_{t,i}$ $(Ah)$')
 plt.show()
+
 
 ##Figure 2
 T = []
@@ -35,8 +37,8 @@ for i in range(len(T)):
 plt.figure()
 for k in range(79):
     plt.plot(CAP[k], RUL[k])
-plt.xlabel('Capacity C_t,i (Ah)')
-plt.ylabel('RUL_t,i (Cycles)')
+plt.xlabel(r'Capacity $C_{t,i}$ $(Ah)$')
+plt.ylabel(r'$RUL_{t,i}$ (Cycles)')
 plt.show
 
 ##Figure 3
@@ -44,8 +46,8 @@ b = pd.read_csv("Battery_test.csv")
 exclude = ["Cycle"]
 b.loc[:,b.columns.difference(exclude)].plot(legend=None)
 plt.axhline(y=0.88,color='r')
-plt.xlabel('t(cycles)')
-plt.ylabel('Capacity C_t,i (Ah)')
+plt.xlabel(r'$t$ (cycles)')
+plt.ylabel(r'Capacity $C_{t,i}$ $(Ah)$')
 plt.show
 
 
