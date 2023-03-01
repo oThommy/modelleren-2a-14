@@ -11,9 +11,6 @@ plt.ylabel('Capacity C_t,i (Ah)')
 plt.show()
 
 ##Figure 2
-b = a
-exclude = ["Cycle"]
-
 T = []
 for i in range(1,80):
     for t in range(2058):
