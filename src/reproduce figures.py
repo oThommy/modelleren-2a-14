@@ -40,9 +40,9 @@ plt.ylabel('RUL_t,i (Cycles)')
 plt.show
 
 ##Figure 3
-c = pd.read_csv("Battery_test.csv")
+b = pd.read_csv("Battery_test.csv")
 exclude = ["Cycle"]
-c.loc[:,c.columns.difference(exclude)].plot(legend=None)
+b.loc[:,b.columns.difference(exclude)].plot(legend=None)
 plt.axhline(y=0.88,color='r')
 plt.xlabel('t(cycles)')
 plt.ylabel('Capacity C_t,i (Ah)')
