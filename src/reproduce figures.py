@@ -21,30 +21,23 @@ for i in range(1,80):
             break
     T+=[t+1]
 
-CAP = []
-for i in range(1,80):
-    temp = []
-    for t in range(2058):
-        if str(a.iloc[t,i]) != "nan":
-            temp += [a.iloc[t,i]]
-    CAP += [temp]
-
-t = []
-for i in range (1,80):
-    temp3 = []
-    for k in range(1,2059):
-        if str(a.iloc[k,i]) == "nan":
-            temp3 += [k]
-    t += [temp3]
-
 RUL = []
-for i in range(0,79):
-    temp2 = []
-    for j in t:
-        temp2 += [T[i]-j[i]]
-    RUL += [temp2]
+for i in T:
+    temp = []
+    for j in range(i):
+        temp += [i-j]
+    RUL += [temp]
 
-plt.plot(CAP[-1], RUL[-1])
+CAP = []
+for i in range(len(T)):
+    temp2 = []
+    for j in range(T[i]):
+        temp2 += [a.iloc[j,i+1]]
+    CAP += [temp2]
+
+plt.figure()
+for k in range(79):
+    plt.plot(CAP[k], RUL[k])
 plt.xlabel('Capacity C_t,i (Ah)')
 plt.ylabel('RUL_t,i (Cycles)')
 plt.show
