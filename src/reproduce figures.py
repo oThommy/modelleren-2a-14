@@ -48,7 +48,7 @@ b.loc[:,b.columns.difference(exclude)].plot(legend=None)
 plt.axhline(y=0.88,color='r')
 plt.xlabel(r'$t$ (cycles)')
 plt.ylabel(r'Capacity $C_{t,i}$ $(Ah)$')
-plt.show
+plt.show()
 
 
 
