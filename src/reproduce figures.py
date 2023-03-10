@@ -39,7 +39,7 @@ for k in range(79):
     plt.plot(CAP[k], RUL[k])
 plt.xlabel(r'Capacity $C_{t,i}$ $(Ah)$')
 plt.ylabel(r'$RUL_{t,i}$ (Cycles)')
-plt.show
+plt.show()
 
 ##Figure 3
 b = pd.read_csv("Battery_test.csv")
