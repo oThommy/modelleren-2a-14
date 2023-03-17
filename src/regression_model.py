@@ -7,7 +7,7 @@ import statsmodels.api as sm
 
 battery_data = pd.read_csv('../data/battery_train.csv')
 
-POLYNOMIAL_DEGREE = 3
+POLYNOMIAL_DEGREE = 8
 
 capacity_points = np.array([])
 RUL_points = np.array([])
@@ -26,10 +26,10 @@ for column in battery_data:
 capacity_points = capacity_points.reshape((-1, 1))
 transformer = PolynomialFeatures(degree=POLYNOMIAL_DEGREE, include_bias=True) # Set include_bias=True to add a column of 1s to the array, such that the polynomial model becomes: Y = β_0 * 1 + β_1 * x^1 + ... + β_p * x^p + e. This column of 1s represents the intercept term β_0
 x = transformer.fit_transform(capacity_points)
-y = RUL_points
+y = np.log(RUL_points + 1)
 model = sm.OLS(y, x).fit()
 
-def forecast_RULs(capacities: npt.ArrayLike) -> np.ndarray:
+def forecast_RULs(capacities: npt.ArrayLike) -> npt.NDArray:
     '''
     Forecast RULs of batteries using the polynomial regression model.
 
@@ -38,11 +38,12 @@ def forecast_RULs(capacities: npt.ArrayLike) -> np.ndarray:
     '''
     transformed_capacities = np.array(capacities).reshape((-1, 1))
     x = transformer.fit_transform(transformed_capacities)
-    RUL_preds = model.predict(x)
+    RUL_preds_transformed = model.predict(x)
+    RUL_preds = np.exp(RUL_preds_transformed) - 1
     return RUL_preds
 
-T = TypeVar('T', bound=npt.DTypeLike)
-def forecast_RUL(capacity: T) -> T:
+_T = TypeVar('_T', bound=npt.DTypeLike)
+def forecast_RUL(capacity: _T) -> _T:
     '''
     Forecast RUL of battery using the polynomial regression model.
 
@@ -52,7 +53,7 @@ def forecast_RUL(capacity: T) -> T:
 
     capacities = np.array([capacity]).reshape((-1, 1))
     RULs = forecast_RULs(capacities)
-    RUL = capacity.__class__(RULs[0]) # Convert RUL type into the same type as capacity parameter
+    RUL = capacity.__class__(RULs[0]) # Cast RUL type into the same type as capacity parameter
     return RUL
 
 # Prolly convert into one function with overloads
