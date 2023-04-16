@@ -1,12 +1,9 @@
 import random
 import pandas
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import matplotlib.pyplot as plt
 from predictmodel import forecast_RUL as RUL
 from sklearn.preprocessing import PolynomialFeatures
-
-
+from scipy.stats import t
 
 
 a_train = pandas.read_csv("Battery_train.csv")
@@ -28,9 +25,10 @@ for i in range(1,11):
     nb += 500*['nan']
     b_test.append(nb)
 
+
 c_m = 0.5
 c_r = 3
-c_p = 100
+c_p = 1
 
 class battery:
     def __init__(self,init_cycle,lst):
@@ -63,54 +61,33 @@ class battery:
             
         return cost
 
-adaptors = []
-inspection_schedules = []
-costs = []
+
+tests = 1000
+costs = np.zeros(tests)
+inspection_schedule = 200
+adaptor = 0
 
 
-for adaptor in [0]:
-    for inspection_schedule in range(200,501):
-        bat = battery(0,random.choice(b_train + b_test))
-        cost = 0
-        for i in range(1000000//inspection_schedule):
-            bat.cycle_to_inspection(inspection_schedule)
-            cost += bat.inspection(inspection_schedule,adaptor)
-        adaptors.append(adaptor)
-        inspection_schedules.append(inspection_schedule)
-        costs.append(cost)
-        # print('adaptor:',adaptor,'| inspection schedule:',inspection_schedule,'| cost:', cost)
 
-# x = np.reshape(adaptors, (len(set(adaptors)),len(set(inspection_schedules))))
-# y = np.reshape(inspection_schedules, (len(set(adaptors)),len(set(inspection_schedules))))
-# z = np.reshape(costs, (len(set(adaptors)),len(set(inspection_schedules))))
+for i in range(tests):
+    bat = battery(0,random.choice(b_test))
+    cost = 0
+    for j in range(2000//inspection_schedule):
+        bat.cycle_to_inspection(inspection_schedule)
+        cost += bat.inspection(inspection_schedule,adaptor)
 
+    costs[i] = cost
+    
+m = costs.mean()
+s = costs.std()
 
-# fig1 = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
+print('Mean =',m,'\nStandard deviaton =',s,'\n')
 
-# ax.plot_surface(x,y,z)
+costs = sorted(costs)
 
-# ax.set_xlabel('adaptor')
-# ax.set_ylabel('inspection_schedule')
-# ax.set_zlabel('cost')
+for percentile in [0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95,0.99]:
+    print(percentile,costs[int(tests*percentile)])
 
-plt.figure(2)
-plt.scatter(inspection_schedules,costs, s = 5)
-
-min_d, max_d = 80, 80
-colors = ['g','r','c','m','y','k']*20
-polynomials = []
-
-for d in range(min_d,max_d+1):
-    z = np.polyfit(inspection_schedules,costs, d)
-    polynomials.append((np.poly1d(z),d))
-
-for (p,d) in polynomials:
-    plt.plot(inspection_schedules,p(inspection_schedules),color = colors[d-1],label = 'degree '+str(d))
-
-# plt.legend()
-plt.xlabel('Inspection frequency')
-plt.ylabel('Cost')
 
 
         
