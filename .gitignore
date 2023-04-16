@@ -1,5 +1,6 @@
 # Custom
 /src/test/
+/src/local/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

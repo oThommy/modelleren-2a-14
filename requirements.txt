@@ -8,3 +8,5 @@ tqdm
 jupyter
 ipympl
 seaborn
+mypy
+statsmodels
